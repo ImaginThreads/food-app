@@ -3,31 +3,31 @@ const fs = require("fs");
 const foodModel = require("../models/foodModel");
 
 const addFood = async (req, res) => {
-   console.log(req.body); // Log the form data
-   console.log(req.file); // Log the uploaded file
+   console.log("Form Data:", req.body);
+   console.log("File Data:", req.file);
 
    if (!req.file) {
       return res.status(400).json({ success: false, message: "File upload failed" });
    }
-
-   let image_filename = `${req.file.filename}`;
 
    const food = new foodModel({
       name: req.body.name,
       description: req.body.description,
       price: req.body.price,
       category: req.body.category,
-      image: image_filename,
+      image: req.file.filename, // Save only the filename
    });
 
    try {
       await food.save();
+      console.log("Food Added Successfully"); // Success log
       res.json({ success: true, message: "Food Added" });
    } catch (error) {
-      console.log(error);
+      console.error("Error saving food item:", error); // Error log
       res.status(500).json({ success: false, message: "Error saving food item" });
    }
 };
+
 
 // all food list
 const listFood = async (req, res)=>{
